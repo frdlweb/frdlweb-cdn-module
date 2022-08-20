@@ -2345,9 +2345,11 @@ Content-Length: 696
   'workspace' =>$domain,
   'baseUrl' => 'https://'.$domain,
   'baseUrlInstaller' => false,
+ // 'sourceApiUrlInstaller' =>'https://webfan.de/install/latest/?source=${class}&salt=${salt}',
   'FRDL_UPDATE_CHANNEL' => 'latest', // latest | stable
   'FRDL_CDN_HOST'=>'cdn.webfan.de',  // cdn.webfan.de | cdn.frdl.de
   'FRDL_CDN_PROXY_REMOVE_QUERY'=>	true, 
+  'FRDL_CDN_SAVING_METHODS'=>	['GET'], 
   'ADMIN_EMAIL' => 'admin@'.$domain,
   'ADMIN_EMAIL_CONFIRMED' =>false,
   'NODE_PATH' => '/opt/plesk/node/12/bin/node',
@@ -2413,6 +2415,7 @@ if(false !==$webfile){
 	 $defaultConfig = [	 
 		 'FRDL_CDN_HOST'=>'cdn.webfan.de',  // cdn.webfan.de | cdn.frdl.de 
 		 'FRDL_CDN_PROXY_REMOVE_QUERY'=>	true, 
+         'FRDL_CDN_SAVING_METHODS'=>	['GET'], 
 	 ];
 	
  try{
@@ -2461,10 +2464,13 @@ if(false !==$webfile){
 		
 		if(false===$error){
 
-          if(!is_dir(dirname($file))){
-			mkdir(  dirname($file), 0755, true);
-		  }
-		  file_put_contents($file, 	$response->getBody() );		
+		 if(in_array($_SERVER['REQUEST_METHOD'],  $config['FRDL_CDN_SAVING_METHODS'])){
+           if(!is_dir(dirname($file))){
+			  mkdir(  dirname($file), 0755, true);
+		   }
+		   file_put_contents($file, 	$response->getBody() );		
+		 }
+			
 
           $response->withHeader(  'Access-Control-Allow-Origin', '*');			
 
