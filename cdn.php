@@ -2303,10 +2303,10 @@ try{
    return $loader;
 }, 																				 
  'https://webfan.de/install/'. $config['FRDL_UPDATE_CHANNEL'].'/?source=${class}&salt=${salt}',
- 4,			   
+ $config['FRDL_REMOTE_PSR4_CACHE_DIR'],			   
  'https://raw.githubusercontent.com/frdl/remote-psr4/master/src/implementations/autoloading/RemoteAutoloaderApiClient.php',
- 24 * 60 * 60,
- 24 * 60 * 60
+ $config['FRDL_REMOTE_PSR4_CACHE_LIMIT_SELF'],
+ $config['FRDL_REMOTE_PSR4_CACHE_LIMIT']
 );
 }catch(\Exception $e){
 
@@ -2350,6 +2350,15 @@ Content-Length: 696
   'FRDL_CDN_HOST'=>'cdn.webfan.de',  // cdn.webfan.de | cdn.frdl.de
   'FRDL_CDN_PROXY_REMOVE_QUERY'=>	true, 
   'FRDL_CDN_SAVING_METHODS'=>	['GET'], 
+  'FRDL_REMOTE_PSR4_CACHE_DIR'=> \sys_get_temp_dir().\DIRECTORY_SEPARATOR
+				                     . \get_current_user()
+				                     .\DIRECTORY_SEPARATOR
+			                         .'.frdl'.\DIRECTORY_SEPARATOR
+		                             .'shared'.\DIRECTORY_SEPARATOR
+			                         .'source'.\DIRECTORY_SEPARATOR
+			                         .'psr4'.\DIRECTORY_SEPARATOR,
+  'FRDL_REMOTE_PSR4_CACHE_LIMIT'=>	24 * 60 * 60, 
+  'FRDL_REMOTE_PSR4_CACHE_LIMIT_SELF'=>	24 * 60 * 60, 
   'ADMIN_EMAIL' => 'admin@'.$domain,
   'ADMIN_EMAIL_CONFIRMED' =>false,
   'NODE_PATH' => '/opt/plesk/node/12/bin/node',
@@ -2468,7 +2477,10 @@ if(false !==$webfile){
            if(!is_dir(dirname($file))){
 			  mkdir(  dirname($file), 0755, true);
 		   }
-		   file_put_contents($file, 	$response->getBody() );		
+
+		   if('/'!==substr($file,-1)){
+			   file_put_contents($file, 	$response->getBody() );		
+		   }
 		 }
 			
 
