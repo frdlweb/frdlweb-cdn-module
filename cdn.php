@@ -2262,21 +2262,9 @@ try{
 	$loader = \call_user_func(function( $s, $cacheDir, $l, $ccl, $cl){	
 	
 	
- $af = (is_string($cacheDir) && is_dir($cacheDir))
-	 ? rtrim($cacheDir, '\\/ ')
+ $af = rtrim($cacheDir, '\\/ ')
 	 .	 
-	 \DIRECTORY_SEPARATOR.str_replace('\\', \DIRECTORY_SEPARATOR, \frdl\implementation\psr4\RemoteAutoloaderApiClient::class).'.php'
-	 : \sys_get_temp_dir().\DIRECTORY_SEPARATOR
-				                     . \get_current_user()
-				                     .\DIRECTORY_SEPARATOR
-			                         .'.frdl'.\DIRECTORY_SEPARATOR
-			                         .'_g'.\DIRECTORY_SEPARATOR
-		                             .'shared'.\DIRECTORY_SEPARATOR
-			                         .'lib'.\DIRECTORY_SEPARATOR
-			                         .'php'.\DIRECTORY_SEPARATOR
-			                         .'src'.\DIRECTORY_SEPARATOR
-			                         .'psr4'.\DIRECTORY_SEPARATOR
-		                              .str_replace('\\', \DIRECTORY_SEPARATOR, \frdl\implementation\psr4\RemoteAutoloaderApiClient::class).'.php';
+	 \DIRECTORY_SEPARATOR.str_replace('\\', \DIRECTORY_SEPARATOR, \frdl\implementation\psr4\RemoteAutoloaderApiClient::class).'.php';
 	
 
  if(!is_dir(dirname($af))){
