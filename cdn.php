@@ -2338,6 +2338,7 @@ Content-Length: 696
   'FRDL_CDN_HOST'=>'cdn.webfan.de',  // cdn.webfan.de | cdn.frdl.de
   'FRDL_CDN_PROXY_REMOVE_QUERY'=>	true, 
   'FRDL_CDN_SAVING_METHODS'=>	['GET'], 
+	 /*
   'FRDL_REMOTE_PSR4_CACHE_DIR'=> \sys_get_temp_dir().\DIRECTORY_SEPARATOR
 				                     . \get_current_user()
 				                     .\DIRECTORY_SEPARATOR
@@ -2345,6 +2346,13 @@ Content-Length: 696
 		                             .'shared'.\DIRECTORY_SEPARATOR
 			                         .'source'.\DIRECTORY_SEPARATOR
 			                         .'psr4'.\DIRECTORY_SEPARATOR,
+						 */
+  'FRDL_REMOTE_PSR4_CACHE_DIR'=> $_SERVER['DOCUMENT_ROOT']
+				                     .\DIRECTORY_SEPARATOR
+			                         .'..'.\DIRECTORY_SEPARATOR
+		                             .'..'.\DIRECTORY_SEPARATOR	 
+		                             .'cache'.\DIRECTORY_SEPARATOR
+			                         .'psr4'.\DIRECTORY_SEPARATOR,	 
   'FRDL_REMOTE_PSR4_CACHE_LIMIT'=>	24 * 60 * 60, 
   'FRDL_REMOTE_PSR4_CACHE_LIMIT_SELF'=>	24 * 60 * 60, 
   'ADMIN_EMAIL' => 'admin@'.$domain,
