@@ -13,3 +13,6 @@ So, if the file is not found in your local project, it lloks up at Frdlweb CDN.
     'FRDL_CDN_SAVING_METHODS'=>	['GET'],  //Only save files to disk, if Request-Methods...
   ````
 
+## Prune files
+* Provide the sha1 hash of the YOUR_KEY and the required cache time in [the config of cdn.php](https://github.com/frdlweb/frdlweb-cdn-module/blob/main/cdn.php#L2333)
+* Call https://example.com/your-assets-path/cdn.php?web=cron.php&key=YOUR_KEY e.g. by a cronjob
