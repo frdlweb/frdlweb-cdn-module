@@ -2262,8 +2262,21 @@ try{
 	$loader = \call_user_func(function( $s, $cacheDir, $l, $ccl, $cl){	
 	
 	
- $af = rtrim($cacheDir, '\\/ ') .	 
-	 \DIRECTORY_SEPARATOR.str_replace('\\', \DIRECTORY_SEPARATOR, \frdl\implementation\psr4\RemoteAutoloaderApiClient::class).'.php';
+ $af = (is_string($cacheDir) && is_dir($cacheDir))
+	 ? rtrim($cacheDir, '\\/ ')
+	 .	 
+	 \DIRECTORY_SEPARATOR.str_replace('\\', \DIRECTORY_SEPARATOR, \frdl\implementation\psr4\RemoteAutoloaderApiClient::class).'.php'
+	 : \sys_get_temp_dir().\DIRECTORY_SEPARATOR
+				                     . \get_current_user()
+				                     .\DIRECTORY_SEPARATOR
+			                         .'.frdl'.\DIRECTORY_SEPARATOR
+			                         .'_g'.\DIRECTORY_SEPARATOR
+		                             .'shared'.\DIRECTORY_SEPARATOR
+			                         .'lib'.\DIRECTORY_SEPARATOR
+			                         .'php'.\DIRECTORY_SEPARATOR
+			                         .'src'.\DIRECTORY_SEPARATOR
+			                         .'psr4'.\DIRECTORY_SEPARATOR
+		                              .str_replace('\\', \DIRECTORY_SEPARATOR, \frdl\implementation\psr4\RemoteAutoloaderApiClient::class).'.php';
 	
 
  if(!is_dir(dirname($af))){
@@ -2438,46 +2451,44 @@ if(false !==$webfile){
 	$file = __DIR__ . str_replace('/', \DIRECTORY_SEPARATOR, $u[0]);
     $file = str_replace(['/./', '/../'], ['', ''], $file);
    
- 
-		$proxy = new \frdl\Proxy\Proxy(null, $uri,
-									   $config['FRDL_CDN_HOST'], 
-									   $config['FRDL_CDN_HOST'],
-									   $_SERVER['REQUEST_METHOD'], 
-									   'https',
-									   false);
-		$error=false;
+	$url = 'https://'.$config['FRDL_CDN_HOST'].$uri;
+
+	// Create a stream
+
+	$opts =[
+        'http'=>[
+            'method'=>$_SERVER['REQUEST_METHOD'],
+            //'header'=>"Accept-Encoding: deflate, gzip\r\n",
+            ],
+	];
+    $context = stream_context_create($opts);
+
+   // Open the file using the HTTP headers set above
+    $result = file_get_contents($url, false, $context);
 	
-
-
-		try{
-		  $response = $proxy->handle(false);
-			if(!$response || 2 !== intval(substr($response->getStatusCode(),0,1) ) ){
-				$error='Invalid response from gateaway!';
-			}
-		}catch(\Exception $e){
-			$error=$e->getMessage();
-		}
-		
-		if(false===$error){
-
-		 if(in_array($_SERVER['REQUEST_METHOD'],  $config['FRDL_CDN_SAVING_METHODS'])){
+        foreach($http_response_header as $i => $header){
+          // $h = explode(':', $header);
+           //$k = strtolower(trim($h[0]));
+          // $v =  (isset($h[1])) ? trim($h[1]) : $header;
+           header($header);
+        }
+	
+		 if(false!==$result && in_array($_SERVER['REQUEST_METHOD'],  $config['FRDL_CDN_SAVING_METHODS'])){
            if(!is_dir(dirname($file))){
 			  mkdir(  dirname($file), 0755, true);
 		   }
 
 		   if('/'!==substr($file,-1)){
-			   file_put_contents($file, 	$response->getBody() );		
+			   file_put_contents($file, $result);		
 		   }
 		 }
-			
 
-          $response->withHeader(  'Access-Control-Allow-Origin', '*');			
-
-          $response->send(true);	
-		}else{
-			die($error);
-		} 
-}
+	   header('Access-Control-Allow-Origin: *');
+	   if(false!==$result){
+		  echo $result;   
+	   }
+ 
+}//no webfile
 
 
 
