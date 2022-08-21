@@ -2330,29 +2330,25 @@ Content-Length: 696
 	$domain =(isset($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
 		    
  return array (
+'FRDL_CDN_PROXY_CACHE_DATESTRING'=> '< last week',  
+	 // 'FRDL_CDN_PROXY_CACHE_DATESTRING'=> '< last minute',  
+	 'FRDL_CDN_CRON_KEY_SHA1'=>	'cbae99e99f0b440abc59bbe5bd0ade76439c1a42', //change to sha1('password')	 
+
+
   'workspace' =>$domain,
   'baseUrl' => 'https://'.$domain,
   'baseUrlInstaller' => false,
  // 'sourceApiUrlInstaller' =>'https://webfan.de/install/latest/?source=${class}&salt=${salt}',
   'FRDL_UPDATE_CHANNEL' => 'latest', // latest | stable
-  'FRDL_CDN_HOST'=>'cdn.webfan.de',  // cdn.webfan.de | cdn.frdl.de
+  'FRDL_CDN_HOST'=>'cdn.frdl.de',  // cdn.webfan.de | cdn.frdl.de
   'FRDL_CDN_PROXY_REMOVE_QUERY'=>	true, 
   'FRDL_CDN_SAVING_METHODS'=>	['GET'], 
-	 /*
-  'FRDL_REMOTE_PSR4_CACHE_DIR'=> \sys_get_temp_dir().\DIRECTORY_SEPARATOR
-				                     . \get_current_user()
-				                     .\DIRECTORY_SEPARATOR
-			                         .'.frdl'.\DIRECTORY_SEPARATOR
-		                             .'shared'.\DIRECTORY_SEPARATOR
-			                         .'source'.\DIRECTORY_SEPARATOR
-			                         .'psr4'.\DIRECTORY_SEPARATOR,
-						 */
   'FRDL_REMOTE_PSR4_CACHE_DIR'=> $_SERVER['DOCUMENT_ROOT']
 				                     .\DIRECTORY_SEPARATOR
 			                         .'..'.\DIRECTORY_SEPARATOR
 		                             .'..'.\DIRECTORY_SEPARATOR	 
 		                             .'cache'.\DIRECTORY_SEPARATOR
-			                         .'psr4'.\DIRECTORY_SEPARATOR,	 
+			                         .'psr4'.\DIRECTORY_SEPARATOR,
   'FRDL_REMOTE_PSR4_CACHE_LIMIT'=>	24 * 60 * 60, 
   'FRDL_REMOTE_PSR4_CACHE_LIMIT_SELF'=>	24 * 60 * 60, 
   'ADMIN_EMAIL' => 'admin@'.$domain,
@@ -2418,7 +2414,7 @@ if(false !==$webfile){
 	die();
 }else{	
 	 $defaultConfig = [	 
-		 'FRDL_CDN_HOST'=>'cdn.webfan.de',  // cdn.webfan.de | cdn.frdl.de 
+		 'FRDL_CDN_HOST'=>'cdn.frdl.de',  // cdn.webfan.de | cdn.frdl.de 
 		 'FRDL_CDN_PROXY_REMOVE_QUERY'=>	true, 
          'FRDL_CDN_SAVING_METHODS'=>	['GET'], 
 	 ];
@@ -2516,6 +2512,72 @@ class NullVoid
 
 --2222EVGuDPPT--
 --3333EVGuDPPT
+Content-Disposition: "php" ; filename="$HOME/$WEBcron.php" ; name="stub cron.php"
+Content-Type: application/x-httpd-php
+
+ 
+	
+function dir_is_empty($dir) {
+  $handle = opendir($dir);
+  while (false !== ($entry = readdir($handle))) {
+    if ($entry != "." && $entry != "..") {
+      closedir($handle);
+      return false;
+    }
+  }
+  closedir($handle);
+  return true;
+}
+
+	 $defaultConfig = [	 
+		 'FRDL_CDN_PROXY_CACHE_DATESTRING'=> '< last week', 
+         'FRDL_CDN_CRON_KEY_SHA1'=>	'cbae99e99f0b440abc59bbe5bd0ade76439c1a42', //change to sha1('password')
+	 ];
+	
+ try{
+   $f = 	 $this->get_file($this->document, '$HOME/apc_config.php', 'stub apc_config.php');
+   if($f)$config = $this->_run_php_1($f);	
+  if(!is_array($config) ){
+	$config=$defaultConfig;  
+  }
+ }catch(\Exception $e){
+		$config=$defaultConfig;  
+ }	
+
+	if(!isset($_REQUEST['key']) || sha1($_REQUEST['key']) !== $config['FRDL_CDN_CRON_KEY_SHA1']){
+	  exit('Access denied, please provide parameter "key"!');	
+	}
+
+   header('Content-Type: text/plain');
+    echo 'prune cache...'."\n";
+
+    $finder = new \Symfony\Component\Finder\Finder();
+    $finder
+		->in(__DIR__)
+        ->ignoreVCSIgnored(true)
+		->notName(['.gitignore', 'cdn.php', '.htaccess','LICENSE', 'README.md'])
+		->date( $config['FRDL_CDN_PROXY_CACHE_DATESTRING'] )
+		//->date( '< last week' )
+   ;
+
+   $finder->sortByName()->reverseSorting();
+
+   foreach ($finder as $file) {
+         $absoluteFilePath = $file->getRealPath();
+         $fileNameWithExtension = $file->getRelativePathname();
+         echo $absoluteFilePath."\n";
+	   if(is_file($absoluteFilePath)){
+		   unlink($absoluteFilePath);
+	   }elseif(is_dir($absoluteFilePath) && dir_is_empty($absoluteFilePath) ){
+		   rmdir($absoluteFilePath);
+	   }
+   }
+
+	echo 'done'."\n";
+
+     exit;
+
+--3333EVGuDPPT--
 Content-Disposition: "php" ; filename="$HOME/version_config.php" ; name="stub version_config.php"
 Content-Type: application/x-httpd-php
 
