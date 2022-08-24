@@ -2345,8 +2345,8 @@ Content-Length: 696
   'FRDL_CDN_SAVING_METHODS'=>	['GET'], 
   'FRDL_REMOTE_PSR4_CACHE_DIR'=> $_SERVER['DOCUMENT_ROOT']
 				                     .\DIRECTORY_SEPARATOR
-			                         .'..'.\DIRECTORY_SEPARATOR
-		                             .'..'.\DIRECTORY_SEPARATOR	 
+		                             .'..'.\DIRECTORY_SEPARATOR
+		                             .'runtime'.\DIRECTORY_SEPARATOR	 
 		                             .'cache'.\DIRECTORY_SEPARATOR
 			                         .'psr4'.\DIRECTORY_SEPARATOR,
   'FRDL_REMOTE_PSR4_CACHE_LIMIT'=>	24 * 60 * 60, 
