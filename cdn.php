@@ -2431,13 +2431,14 @@ if(false !==$webfile){
 
 
 
-   $myBaseUri = substr(__DIR__, strlen($_SERVER['DOCUMENT_ROOT']), strlen(__DIR__) );
-   $uri =  substr($_SERVER['REQUEST_URI'], strlen($myBaseUri), strlen($_SERVER['REQUEST_URI']) );	 
-   $u = explode('?', $uri);
+  
+	$uri =  substr($_SERVER['REQUEST_URI'], strlen('/'.basename(__DIR__)), strlen($_SERVER['REQUEST_URI']) );		 
+ 
+	$u = explode('?', $uri);
   
 	
 	if(true === $config['FRDL_CDN_PROXY_REMOVE_QUERY']){
-       $uri = $u[0];
+          $uri = $u[0];
 	}
 	
 	$file = __DIR__ . str_replace('/', \DIRECTORY_SEPARATOR, $u[0]);
@@ -2456,7 +2457,11 @@ if(false !==$webfile){
     $context = stream_context_create($opts);
 
    // Open the file using the HTTP headers set above
-    $result = file_get_contents($url, false, $context);
+       $result = @file_get_contents($url, false, $context);
+	if(false === $result){
+                header( $_SERVER['SERVER_PROTOCOL']." 404 Not Found", true );
+		return;
+	}
 	
         foreach($http_response_header as $i => $header){
           // $h = explode(':', $header);
