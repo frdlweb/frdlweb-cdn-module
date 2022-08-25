@@ -2330,7 +2330,7 @@ Content-Length: 696
 	$domain =(isset($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
 		    
  return array (
-'FRDL_CDN_PROXY_CACHE_DATESTRING'=> '< last week',  
+'FRDL_CDN_PROXY_CACHE_DATESTRING'=> '< 60 minutes ago',  
 	 // 'FRDL_CDN_PROXY_CACHE_DATESTRING'=> '< last minute',  
 	 'FRDL_CDN_CRON_KEY_SHA1'=>	'cbae99e99f0b440abc59bbe5bd0ade76439c1a42', //change to sha1('password')	 
 
@@ -2535,7 +2535,7 @@ function dir_is_empty($dir) {
 }
 
 	 $defaultConfig = [	 
-		 'FRDL_CDN_PROXY_CACHE_DATESTRING'=> '< last week', 
+		 'FRDL_CDN_PROXY_CACHE_DATESTRING'=> '< 60 minutes ago', 
          'FRDL_CDN_CRON_KEY_SHA1'=>	'cbae99e99f0b440abc59bbe5bd0ade76439c1a42', //change to sha1('password')
 	 ];
 	
@@ -2551,6 +2551,11 @@ function dir_is_empty($dir) {
 
 	if(!isset($_REQUEST['key']) || sha1($_REQUEST['key']) !== $config['FRDL_CDN_CRON_KEY_SHA1']){
 	  exit('Access denied, please provide parameter "key"!');	
+	}
+
+
+	if(isset($_REQUEST['devflush']) ){
+		$config['FRDL_CDN_PROXY_CACHE_DATESTRING'] = '< 1 minute ago';
 	}
 
    header('Content-Type: text/plain');
