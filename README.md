@@ -1,5 +1,5 @@
 # frdlweb-cdn-module
-Proxies the Frdlweb CDN and caches/saves locally into your cdn/assets directory.
+Proxies the [Frdlweb CDN](https://frdlweb.de/cdn/index) and caches/saves locally into your cdn/assets directory.
 So, if the file is not found in your local project, it lloks up at Frdlweb CDN.
 
 ## Installation
