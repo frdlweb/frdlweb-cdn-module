@@ -2330,9 +2330,8 @@ Content-Length: 696
 	$domain =(isset($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
 		    
  return array (
-'FRDL_CDN_PROXY_CACHE_DATESTRING'=> '< 60 minutes ago',  
-	 // 'FRDL_CDN_PROXY_CACHE_DATESTRING'=> '< last minute',  
-	 'FRDL_CDN_CRON_KEY_SHA1'=>	'cbae99e99f0b440abc59bbe5bd0ade76439c1a42', //change to sha1('password')	 
+   'FRDL_CDN_PROXY_CACHE_DATESTRING'=> '< 60 minutes ago',
+   'FRDL_CDN_CRON_KEY_SHA1'=>	'cbae99e99f0b440abc59bbe5bd0ade76439c1a42', //change to sha1('password')	 
 
 
   'workspace' =>$domain,
@@ -2575,11 +2574,12 @@ function dir_is_empty($dir) {
    foreach ($finder as $file) {
          $absoluteFilePath = $file->getRealPath();
          $fileNameWithExtension = $file->getRelativePathname();
-         echo $absoluteFilePath."\n";
 	   if(is_file($absoluteFilePath)){
 		   unlink($absoluteFilePath);
+                   echo $absoluteFilePath."\n";
 	   }elseif(is_dir($absoluteFilePath) && dir_is_empty($absoluteFilePath) ){
 		   rmdir($absoluteFilePath);
+                   echo $absoluteFilePath."\n";
 	   }
    }
 
