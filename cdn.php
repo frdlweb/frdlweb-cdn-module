@@ -2339,7 +2339,7 @@ Content-Length: 696
   'baseUrlInstaller' => false,
  // 'sourceApiUrlInstaller' =>'https://webfan.de/install/latest/?source=${class}&salt=${salt}',
   'FRDL_UPDATE_CHANNEL' => 'latest', // latest | stable
-  'FRDL_CDN_HOST'=>'cdn.frdl.de',  // cdn.webfan.de | cdn.frdl.de
+  'FRDL_CDN_HOST'=>'cdn.startdir.de',  // cdn.webfan.de | cdn.startdir.de | cdn.frdl.de
   'FRDL_CDN_PROXY_REMOVE_QUERY'=>	true, 
   'FRDL_CDN_SAVING_METHODS'=>	['GET'], 
   'FRDL_REMOTE_PSR4_CACHE_DIR'=> $_SERVER['DOCUMENT_ROOT']
