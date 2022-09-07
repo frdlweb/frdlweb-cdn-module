@@ -2441,12 +2441,17 @@ if(false !==$webfile){
 	}
 	
 	$file = __DIR__ . str_replace('/', \DIRECTORY_SEPARATOR, $u[0]);
-    $file = str_replace(['/./', '/../'], ['', ''], $file);
+        $file = str_replace(['/./', '/../'], ['', ''], $file);
    
 	$url = 'https://'.$config['FRDL_CDN_HOST'].$uri;
 
+	
+	$test=explode('.', $file);  
+	if('php' === $test[count($test)-1]){
+	  exit('Error: php');	
+	}
+	
 	// Create a stream
-
 	$opts =[
         'http'=>[
             'method'=>$_SERVER['REQUEST_METHOD'],
