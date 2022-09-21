@@ -2328,7 +2328,47 @@ Content-Length: 696
 
 
 	$domain =(isset($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
-		    
+		  
+
+  $webrootConfigFile = getenv('FRDL_WORKSPACE').\DIRECTORY_SEPARATOR.'1.3.6.1.4.1.37553.8.1.8.8.11.6'.\DIRECTORY_SEPARATOR
+	  .sha1(str_replace(getenv('HOME'), '', $_SERVER['DOCUMENT_ROOT'])).\DIRECTORY_SEPARATOR.'app.php';
+
+
+  if(file_exists($webrootConfigFile)){
+	  $webrootConfig = require $webrootConfigFile;
+      $dirRemotePsr4 =$webrootConfig['stages'][$webrootConfig['stage']]
+		                            .\DIRECTORY_SEPARATOR
+			                         .'runtime'.\DIRECTORY_SEPARATOR
+			                         .'cache'.\DIRECTORY_SEPARATOR
+			                         .'classes'.\DIRECTORY_SEPARATOR
+			                         .'psr4'.\DIRECTORY_SEPARATOR;	  
+  }else{
+
+$dirRemotePsr4 = getenv('FRDL_WORKSPACE').\DIRECTORY_SEPARATOR.'apps'.\DIRECTORY_SEPARATOR
+	 .'1.3.6.1.4.1.37553.8.1.8.8.1958965301'
+	 .\DIRECTORY_SEPARATOR.'deployments'
+	 .\DIRECTORY_SEPARATOR.'blue'
+	 .\DIRECTORY_SEPARATOR.'deploy'
+	 .\DIRECTORY_SEPARATOR.'app'.\DIRECTORY_SEPARATOR
+			                         .'runtime'.\DIRECTORY_SEPARATOR
+			                         .'cache'.\DIRECTORY_SEPARATOR
+			                         .'classes'.\DIRECTORY_SEPARATOR
+			                         .'psr4'.\DIRECTORY_SEPARATOR;
+ 
+ if(!is_dir($dirRemotePsr4) && !mkdir($dirRemotePsr4, 0755, true)){
+   $dirRemotePsr4 =  __DIR__.\DIRECTORY_SEPARATOR
+				                     . '..'
+				                     .\DIRECTORY_SEPARATOR
+				                     . '..'
+				                     .\DIRECTORY_SEPARATOR
+			                         .'runtime'.\DIRECTORY_SEPARATOR
+			                         .'cache'.\DIRECTORY_SEPARATOR
+			                         .'classes'.\DIRECTORY_SEPARATOR
+			                         .'psr4'.\DIRECTORY_SEPARATOR;
+ }
+
+  }
+
  return array (
    'FRDL_CDN_PROXY_CACHE_DATESTRING'=> '< 60 minutes ago',
    'FRDL_CDN_CRON_KEY_SHA1'=>	'cbae99e99f0b440abc59bbe5bd0ade76439c1a42', //change to sha1('password')	 
@@ -2342,12 +2382,7 @@ Content-Length: 696
   'FRDL_CDN_HOST'=>'cdn.startdir.de',  // cdn.webfan.de | cdn.startdir.de | cdn.frdl.de
   'FRDL_CDN_PROXY_REMOVE_QUERY'=>	true, 
   'FRDL_CDN_SAVING_METHODS'=>	['GET'], 
-  'FRDL_REMOTE_PSR4_CACHE_DIR'=> $_SERVER['DOCUMENT_ROOT']
-				                     .\DIRECTORY_SEPARATOR
-		                             .'..'.\DIRECTORY_SEPARATOR
-		                             .'runtime'.\DIRECTORY_SEPARATOR	 
-		                             .'cache'.\DIRECTORY_SEPARATOR
-			                         .'psr4'.\DIRECTORY_SEPARATOR,
+  'FRDL_REMOTE_PSR4_CACHE_DIR'=>$dirRemotePsr4,
   'FRDL_REMOTE_PSR4_CACHE_LIMIT'=>	24 * 60 * 60, 
   'FRDL_REMOTE_PSR4_CACHE_LIMIT_SELF'=>	24 * 60 * 60, 
   'ADMIN_EMAIL' => 'admin@'.$domain,
